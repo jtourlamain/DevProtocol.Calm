@@ -1,0 +1,28 @@
+{
+  "type": "Microsoft.Resources/deployments",
+  "apiVersion": "2018-05-01",
+  "name": "$$$TemplateName$$$",
+  "properties": {
+    "mode": "Incremental",
+    "templateLink": {
+      "uri": "[variables('storageTemplateUrl')]",
+      "contentVersion": "1.0.0.0"
+    },
+    "parameters": {
+      "resourceNamePrefixShort": {
+        "value": "[reference('namingTemplate').outputs.resourceNamePrefixShort.value]"
+      },
+      "environmentName": {
+        "value": "[reference('namingTemplate').outputs.envName.value]"
+      },
+      "environmentSize": {
+        "value": "[parameters('environmentSize')]"
+      }
+      
+      $$$BlobNames$$$
+    }
+  },
+  "dependsOn": [
+    $$$Dependencies$$$
+  ]
+}
