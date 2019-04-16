@@ -1,0 +1,64 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters":{
+    "templateBaseUrl": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/jtourlamain/DevProtocol.Calm/master/armtemplates/",
+      "metadata": {
+        "description": "The base url where the templates can be found." 
+      }
+    }
+  },
+  "variables":{    
+    "namingconventionTemplateUrl": "[concat(parameters('templateBaseUrl'),'calm_namingconvention.json')]",
+    "apiappTemplateUrl": "[concat(parameters('templateBaseUrl'),'apiapp.json')]",
+    "appserviceplanTemplateUrl": "[concat(parameters('templateBaseUrl'),'appserviceplan.json')]",
+    "functionappTemplateUrl": "[concat(parameters('templateBaseUrl'),'functionapp.json')]",
+    "keyvaultTemplateUrl": "[concat(parameters('templateBaseUrl'),'keyvault.json')]",
+    "servicebusTemplateUrl": "[concat(parameters('templateBaseUrl'),'servicebus.json')]",
+    "sqlserverTemplateUrl": "[concat(parameters('templateBaseUrl'),'sqlserver.json')]",
+    "storageTemplateUrl": "[concat(parameters('templateBaseUrl'),'storage.json')]",
+    "webappTemplateUrl": "[concat(parameters('templateBaseUrl'),'webapp.json')]"
+  },
+  "resources":[
+    ],
+    "outputs":{
+      "namingconventionTemplateUrl" : {
+        "type" : "string",
+        "value": "[variables('namingconventionTemplateUrl')]"
+      },
+      "apiappTemplateUrl" : {
+        "type" : "string",
+        "value": "[variables('apiappTemplateUrl')]"
+      },
+      "appserviceplanTemplateUrl" : {
+        "type" : "string",
+        "value": "[variables('appserviceplanTemplateUrl')]"
+      },
+      "functionappTemplateUrl" : {
+        "type" : "string",
+        "value": "[variables('functionappTemplateUrl')]"
+      },
+      "keyvaultTemplateUrl" : {
+        "type" : "string",
+        "value": "[variables('keyvaultTemplateUrl')]"
+      },
+      "servicebusTemplateUrl" :{
+        "type" : "string",
+        "value" : "[variables('servicebusTemplateUrl')]"
+      },
+      "sqlserverTemplateUrl" : {
+        "type" : "string",
+        "value": "[variables('sqlserverTemplateUrl')]"
+      },
+      "storageTemplateUrl" : {
+        "type" : "string",
+        "value": "[variables('storageTemplateUrl')]"
+      },
+      "webappTemplateUrl" : {
+        "type" : "string",
+        "value": "[variables('webappTemplateUrl')]"
+      }
+    }
+ }

@@ -1,0 +1,70 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the hosting plan"
+      }
+    },
+    "environmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Used for dotnet core appsettings config file"
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "the storage account name that needs to be used to link the function app"
+      }
+    },
+    "appServicePlanName": {
+      "type": "string",
+      "metadata": {
+        "description": "the service plan name that needs to be used to host the function app"
+      }
+    }
+  },
+  "variables": {
+    "functionAppName": "[toLower(parameters('resourceName'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2016-08-01",
+      "name": "[variables('functionAppName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[resourceGroup().location]",
+      "kind": "functionapp",
+      "tags": {
+        "displayName": "FunctionApp",
+        "environment": "[parameters('environmentName')]"
+      },
+      "properties": {
+        "serverFarmId": "[resourceId(resourceGroup().name, 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2016-08-01",
+          "name": "appsettings",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId(resourceGroup().name, 'Microsoft.Web/sites', variables('functionAppName'))]"
+          ],
+          "properties": {
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1,';')]",
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1,';')]",
+            "FUNCTIONS_EXTENSION_VERSION": "~1"
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "resourceName": {
+      "type": "string",
+      "value": "[reference(variables('functionAppName')).name]"
+    }
+  }
+}

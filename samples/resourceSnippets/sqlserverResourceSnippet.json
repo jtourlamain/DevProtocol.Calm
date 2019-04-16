@@ -1,0 +1,38 @@
+{
+  "type": "Microsoft.Resources/deployments",
+  "apiVersion": "2015-01-01",
+  "name": "sqlserverTemplate",
+  "properties": {
+    "mode": "Incremental",
+    "templateLink": {
+      "uri": "[reference('configurationTemplate').outputs.sqlserverTemplateUrl.value]",
+      "contentVersion": "1.0.0.0"
+    },
+    "parameters": {
+      "resourceName": {
+        "value": "[reference('namingconventionTemplate').outputs.defaultNames.value.sqlserver]"
+      },
+      "environmentName": {
+        "value": "[reference('namingconventionTemplate').outputs.envName.value]"
+      },
+      "environmentSize": {
+        "value": "[parameters('environmentSize')]"
+      },
+      "adminLogin": {
+        "value": "myadmin"
+      },
+      "adminPassword": {
+        "value": "mypass"
+      },
+      "databases": {
+        "value": [
+          "mydb"
+        ]
+      }
+    }
+  },
+  "dependsOn": [
+    "configurationTemplate",
+    "namingconventionTemplate"
+  ]
+}

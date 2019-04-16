@@ -1,0 +1,95 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the hosting plan"
+      }
+    },
+    "environmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Used for tagging"
+      }
+    },
+    "environmentSize": {
+      "type": "string",
+      "defaultValue": "small",
+      "allowedValues": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "metadata": {
+        "description": "T-shirt size for resources"
+      }
+    },
+    "blobNames": {
+      "type": "array",
+      "defaultValue": [
+        "none"
+      ]
+    }
+  },
+  "variables": {
+    "storageAccountName": "[toLower(parameters('resourceName'))]",
+    "createBlobs":"[if(equals(first(parameters('blobNames')),'none'),'no','yes')]",
+    "ts-Size": {
+      "small": {
+        "skuName": "Standard_LRS"
+      },
+      "medium": {
+        "skuName": "Standard_ZRS"
+      },
+      "large": {
+        "skuName": "Standard_ZRS"
+      }
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2018-02-01",
+      "name": "[variables('storageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "StorageAccount",
+        "environment": "[parameters('environmentName')]"
+      },
+      "sku": {
+        "name": "[variables('ts-Size')[parameters('environmentSize')].skuName]"
+      },
+      "kind": "Storage",
+      "properties": {}
+    },
+    {
+      "condition": "[equals(variables('createBlobs'),'yes')]",
+      "name": "[concat(variables('storageAccountName'),'/default/',toLower(parameters('blobNames')[copyIndex()]))]",
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2018-02-01",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "publicAccess": "None"
+      },
+      "copy": {
+        "name": "storagecopy",
+        "count": "[length(parameters('blobNames'))]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceName":{
+      "type":"string",
+      "value":"[variables('storageAccountName')]"
+    },
+    "blobEndpoint":{
+      "type":"string",
+      "condition":"[equals(variables('createBlobs'),'yes')]",
+      "value":"[reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))).primaryEndpoints.blob]"
+    }
+  }
+}

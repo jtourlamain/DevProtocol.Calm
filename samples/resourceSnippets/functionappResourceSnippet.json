@@ -1,0 +1,32 @@
+{
+  "type": "Microsoft.Resources/deployments",
+  "apiVersion": "2015-01-01",
+  "name": "functionappTemplate",
+  "properties": {
+    "mode": "Incremental",
+    "templateLink": {
+      "uri": "[reference('configurationTemplate').outputs.functionappTemplateUrl.value]",
+      "contentVersion": "1.0.0.0"
+    },
+    "parameters": {
+      "resourceName": {
+        "value": "[reference('namingconventionTemplate').outputs.defaultNames.value.functionapp]"
+      },
+      "environmentName": {
+        "value": "[reference('namingconventionTemplate').outputs.envName.value]"
+      },
+      "storageAccountName": {
+        "value": "[reference('storageTemplate').outputs.resourceName.value]"
+      },
+      "appServicePlanName": {
+        "value": "[reference('functionappserviceplanTemplate').outputs.resourceName.value]"
+      }
+    }
+  },
+  "dependsOn": [
+    "configurationTemplate",
+    "namingconventionTemplate",
+    "storageTemplate",
+    "functionappserviceplanTemplate"
+  ]
+}

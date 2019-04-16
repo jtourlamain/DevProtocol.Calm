@@ -1,0 +1,82 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the hosting plan"
+      }
+    },
+    "environmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Used for dotnet core appsettings config file"
+      }
+    },
+    "environmentSize": {
+      "type": "string",
+      "defaultValue": "small",
+      "allowedValues": [
+        "dynamic",
+        "small",
+        "medium",
+        "large"
+      ],
+      "metadata": {
+        "description": "T-shirt size for resources"
+      }
+    }
+  },
+  "variables": {
+    "appServicePlanName": "[toLower(parameters('resourceName'))]",
+    "ts-Size": {
+      "dynamic":{
+        "skuName":"Y1",
+        "skuTier":"Dynamic",
+        "skuCapacity": 0
+      },
+      "small": {
+        "skuName": "B1",
+        "skuTier":"Basic",
+        "skuCapacity": 1
+      },
+      "medium": {
+        "skuName": "S1",
+        "skuTier": "Standard",
+        "skuCapacity": 1
+      },
+      "large": {
+        "skuName": "S1",
+        "skuTier": "Standard",
+        "skuCapacity": 1
+      }
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2018-02-01",
+      "name": "[variables('appServicePlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "AppServicePlan",
+        "environment": "[parameters('environmentName')]"
+      },
+      "sku": {
+        "name": "[variables('ts-Size')[parameters('environmentSize')].skuName]",
+        "tier": "[variables('ts-Size')[parameters('environmentSize')].skuTier]",
+        "capacity": "[variables('ts-Size')[parameters('environmentSize')].skuCapacity]"
+      },
+      "properties": {
+        "name": "[variables('appServicePlanName')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceName":{
+      "type": "string",
+      "value": "[variables('appServicePlanName')]"
+    }
+  }
+}

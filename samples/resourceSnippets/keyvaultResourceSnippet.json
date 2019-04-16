@@ -1,0 +1,27 @@
+{
+  "type": "Microsoft.Resources/deployments",
+  "apiVersion": "2015-01-01",
+  "name": "keyvaultTemplate",
+  "properties": {
+    "mode": "Incremental",
+    "templateLink": {
+      "uri": "[reference('configurationTemplate').outputs.keyvaultTemplateUrl.value]",
+      "contentVersion": "1.0.0.0"
+    },
+    "parameters": {
+      "resourceName": {
+        "value": "[reference('namingconventionTemplate').outputs.defaultNames.value.keyvault]"
+      },
+      "environmentName": {
+        "value": "[reference('namingconventionTemplate').outputs.envName.value]"
+      },
+      "environmentSize": {
+        "value": "[parameters('environmentSize')]"
+      }
+    }
+  },
+  "dependsOn": [
+    "configurationTemplate",
+    "namingconventionTemplate"
+  ]
+}

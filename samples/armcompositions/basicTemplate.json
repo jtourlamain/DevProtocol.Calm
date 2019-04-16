@@ -1,0 +1,103 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "companyName": {
+      "type": "string",
+      "defaultValue": "foo",
+      "minLength": 3,
+      "maxLength": 10,
+      "metadata": {
+        "description": "The company name this set of parameters appliest to."
+      }
+    },
+    "projectName": {
+      "type": "string",
+      "defaultValue": "bar",
+      "minLength": 3,
+      "maxLength": 10,
+      "metadata": {
+        "description": "The project name this set of parameters appliest to."
+      }
+    },
+    "environmentName": {
+      "type": "string",
+      "defaultValue": "Development",
+      "allowedValues": [
+        "Development",
+        "Acceptance",
+        "Production"
+      ],
+      "metadata": {
+        "description": " The environment this set of parameters applies to."
+      }
+    },
+    "environmentSize": {
+      "type": "string",
+      "defaultValue": "small",
+      "allowedValues": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "metadata": {
+        "description": "T-shirt size for resources"
+      }
+    },
+    "configurationUrl":{
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/jtourlamain/DevProtocol.Calm/master/armtemplates/calm_config.json",
+      "metadata": {
+        "description": "The url where the calm configuration can be found. The configuration contains the urls to all othere templates"
+      }
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "name": "configurationTemplate",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[parameters('configurationUrl')]",
+          "contentVersion": "1.0.0.0"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "name": "namingconventionTemplate",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[reference('configurationTemplate').outputs.namingconventionTemplateUrl.value]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "companyName": {
+            "value": "[parameters('companyName')]"
+          },
+          "projectName": {
+            "value": "[parameters('projectName')]"
+          },
+          "environmentName": {
+            "value": "[parameters('environmentName')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "configurationTemplate"
+      ]
+    }
+  ],
+  "outputs": {
+    "mynamingdemo":{
+      "type": "string",
+      "value": "[reference('namingconventionTemplate').outputs.defaultNames.value.apiapp]"
+    }
+  }
+}

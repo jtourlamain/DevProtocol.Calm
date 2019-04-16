@@ -1,0 +1,146 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters":{
+    "companyName":{
+        "type":"string",
+        "minLength": 3,
+        "maxLength":10 ,
+        "metadata": {
+            "description":"The company name this set of parameters appliest to." 
+        }
+    },
+    "projectName":{
+        "type":"string",
+        "minLength": 3,
+        "maxLength": 10 ,
+        "metadata":{
+            "description":"The project name this set of parameters applies to."
+        }
+    },
+    "environmentName":{
+        "type":"string",
+        "defaultValue":"Development",
+        "allowedValues": [
+            "Poc",
+            "Development",
+            "Acceptance",
+            "Production"
+        ],
+        "metadata":{
+            "description":" The environment this set of parameters applies to."
+        }
+    }
+  },
+  "variables":{    
+    "companyName":"[toLower(parameters('companyName'))]",
+    "projectName":"[toLower(parameters('projectName'))]",
+    "envName":"[parameters('environmentName')]",
+    "envVars" : {
+      "Poc":{
+        "envShort":"poc",
+        "envAffix":"-poc",
+        "envAffixShort":"poc"
+      },
+      "Development":{
+        "envShort":"d",
+        "envAffix":"-d",
+        "envAffixShort":"d"
+      },
+      "Acceptance":{
+        "envShort":"a",
+        "envAffix":"-a",
+        "envAffixShort":"a"
+      },
+      "Production":{
+        "envShort":"p",
+        "envAffix":"",
+        "envAffixShort":""
+      }
+    },
+    "resourceConventions": {
+      "apiapp":{
+        "abbreviation":"api-wa",
+        "delimiter":"-"
+      },
+      "appserviceplan":{
+        "abbreviation":"asp",
+        "delimiter":"-"
+      },
+      "functionapp":{
+        "abbreviation":"fa",
+        "delimiter":"-"
+      },
+      "keyvault":{
+        "abbreviation":"akv",
+        "delimiter":"-"
+      },
+      "servicebus":{
+        "abbreviation":"sbs",
+        "delimiter":"-"
+      },
+      "sqlserver":{
+        "abbreviation":"sql",
+        "delimiter":"-"
+      },
+      "storage":{
+        "abbreviation":"st",
+        "delimiter":""
+      },
+      "webapp":{
+        "abbreviation":"web-wa",
+        "delimiter":"-"
+      }
+    },
+    "defaultNames":{
+      "apiapp":"[concat(variables('companyName'),variables('resourceConventions').apiapp.delimiter,variables('projectName'),variables('resourceConventions').apiapp.delimiter,variables('envVars')[parameters('environmentName')].envAffixShort,variables('resourceConventions').apiapp.delimiter,variables('resourceConventions').apiapp.abbreviation)]",
+      "appserviceplan": "[concat(variables('companyName'),variables('resourceConventions').appserviceplan.delimiter,variables('projectName'),variables('resourceConventions').appserviceplan.delimiter,variables('envVars')[parameters('environmentName')].envAffixShort,variables('resourceConventions').appserviceplan.delimiter,variables('resourceConventions').appserviceplan.abbreviation)]",
+      "functionapp":"[concat(variables('companyName'),variables('resourceConventions').functionapp.delimiter,variables('projectName'),variables('resourceConventions').functionapp.delimiter,variables('envVars')[parameters('environmentName')].envAffixShort,variables('resourceConventions').functionapp.delimiter,variables('resourceConventions').functionapp.abbreviation)]",
+      "keyvault":"[concat(variables('companyName'),variables('resourceConventions').keyvault.delimiter,variables('projectName'),variables('resourceConventions').keyvault.delimiter,variables('envVars')[parameters('environmentName')].envAffixShort,variables('resourceConventions').keyvault.delimiter,variables('resourceConventions').keyvault.abbreviation)]",
+      "servicebus":"[concat(variables('companyName'),variables('resourceConventions').servicebus.delimiter,variables('projectName'),variables('resourceConventions').servicebus.delimiter,variables('envVars')[parameters('environmentName')].envAffixShort,variables('resourceConventions').servicebus.delimiter,variables('resourceConventions').servicebus.abbreviation)]",
+      "sqlserver":"[concat(variables('companyName'),variables('resourceConventions').sqlserver.delimiter,variables('projectName'),variables('resourceConventions').sqlserver.delimiter,variables('envVars')[parameters('environmentName')].envAffixShort,variables('resourceConventions').sqlserver.delimiter,variables('resourceConventions').sqlserver.abbreviation)]",
+      "storage":"[concat(variables('companyName'),variables('resourceConventions').storage.delimiter,variables('projectName'),variables('resourceConventions').storage.delimiter,variables('envVars')[parameters('environmentName')].envAffixShort,variables('resourceConventions').storage.delimiter,variables('resourceConventions').storage.abbreviation)]",
+      "webapp":"[concat(variables('companyName'),variables('resourceConventions').webapp.delimiter,variables('projectName'),variables('resourceConventions').webapp.delimiter,variables('envVars')[parameters('environmentName')].envAffixShort,variables('resourceConventions').webapp.delimiter,variables('resourceConventions').webapp.abbreviation)]"
+    }
+  },
+  "resources":[
+    ],
+    "outputs":{
+      "companyName" : {
+        "type" : "string",
+        "value": "[variables('companyName')]"
+      },
+      "projectName" : {
+        "type" : "string",
+        "value": "[variables('projectName')]"
+      },
+      "envName" : {
+        "type" : "string",
+        "value": "[variables('envName')]"
+      },
+      "envShort": {
+        "type" : "string",
+        "value": "[variables('envVars')[parameters('environmentName')].envShort]"
+      },
+      "envAffix": {
+        "type" : "string",
+        "value": "[variables('envVars')[parameters('environmentName')].envAffix]"
+      },
+      "resourceNamePrefix":{
+        "type": "string",
+        "value": "[concat(variables('companyName'),'-',variables('projectName'),variables('envVars')[parameters('environmentName')].envAffix)]"
+      },
+      "resourceNamePrefixShort":{
+        "type":"string",
+        "value":"[concat(variables('companyName'),variables('projectName'),variables('envVars')[parameters('environmentName')].envAffixShort)]"
+      },
+      "resourceConventions":{
+        "type": "object",
+        "value": "[variables('resourceConventions')]"
+      },
+      "defaultNames":{
+        "type": "object",
+        "value": "[variables('defaultNames')]"
+      }
+    }
+ }

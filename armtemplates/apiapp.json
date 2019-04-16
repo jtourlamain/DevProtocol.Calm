@@ -1,0 +1,68 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the hosting plan" 
+      }
+    },
+    "environmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Used for dotnet core appsettings config file"
+      }
+    },
+    "appServicePlanName": {
+      "type": "string",
+      "metadata": {
+        "description": "used to link web app to a hosting plan"
+      }
+    }
+  },
+  "variables": {
+    "apiAppName": "[toLower(parameters('resourceName'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-08-01",
+      "name": "[variables('apiAppName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "ApiApp",
+        "environment": "[parameters('environmentName')]"
+      },
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+        "kind":"api",
+        "httpsOnly": true
+      },
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "appsettings",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('apiAppName'))]"
+          ],
+          "properties": {
+            "MSDEPLOY_RENAME_LOCKED_FILES": "1",
+            "ASPNETCORE_ENVIRONMENT": "[parameters('environmentName')]"
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "resourceName": {
+      "type": "string",
+      "value": "[reference(variables('apiAppName')).name]"
+    },
+    "resourceHostName": {
+      "type": "string",
+      "value": "[reference(concat('Microsoft.Web/sites/', variables('apiAppName'))).hostnames[0]]"
+    }
+  }
+}

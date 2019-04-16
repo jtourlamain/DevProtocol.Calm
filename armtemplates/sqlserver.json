@@ -1,0 +1,133 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the hosting plan"
+      }
+    },
+    "environmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Used for tagging"
+      }
+    },
+    "environmentSize": {
+      "type": "string",
+      "defaultValue": "small",
+      "allowedValues": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "metadata": {
+        "description": "T-shirt size for resources"
+      }
+    },
+    "adminLogin": {
+      "type": "string",
+      "metadata": {
+        "description": "Administrator login of the sql database"
+      }
+    },
+    "adminPassword": {
+      "type": "string",
+      "metadata": {
+        "description": "Administrator password of the sql database"
+      }
+    },
+    "databases":{
+      "type":"array",
+      "defaultValue": [
+        "none"
+      ]
+    }
+  },
+  "variables": {
+    "sqlServerName": "[toLower(parameters('resourceName'))]",
+    "createDatabases": "[if(equals(first(parameters('databases')),'none'),'no','yes')]",
+    "ts-Size": {
+      "small": {
+        "dbEdition": "Basic",
+        "dbRequestedServiceObjectiveName": "Basic"
+      },
+      "medium": {
+        "dbEdition": "Standard",
+        "dbRequestedServiceObjectiveName": "S1"
+      },
+      "large": {
+        "dbEdition": "Premium",
+        "dbRequestedServiceObjectiveName": "S2"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Sql/servers",
+      "apiVersion":"2014-04-01",
+      "name": "[variables('sqlserverName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "administratorLogin": "[parameters('adminLogin')]",
+        "administratorLoginPassword": "[parameters('adminPassword')]",
+        "version": "12.0"
+      },
+      "tags": {
+        "displayName": "SqlServer",
+        "environment": "[parameters('environmentName')]"
+      },
+      "resources": [
+        {
+          "type": "firewallRules",
+          "apiVersion": "2014-04-01",
+          "dependsOn": [
+            "[variables('sqlserverName')]"
+          ],
+          "location": "[resourceGroup().location]",
+          "name": "AllowAllWindowsAzureIps",
+          "properties": {
+            "endIpAddress": "0.0.0.0",
+            "startIpAddress": "0.0.0.0"
+          }
+        }
+      ]
+    },
+    {
+      "condition":"[equals(variables('createDatabases'),'yes')]",
+        "type": "Microsoft.Sql/servers/databases",
+        "apiVersion": "2014-04-01",
+        "name": "[concat(variables('sqlserverName'),'/',toLower(parameters('databases')[copyIndex()]))]",
+        "location": "[resourceGroup().location]",
+        "tags": {
+          "displayName": "SqlDatabase",
+          "environment": "[parameters('environmentName')]"
+        },
+        "dependsOn": [
+          "[variables('sqlserverName')]"
+        ],
+        "properties": {
+          "edition": "[variables('ts-Size')[parameters('environmentSize')].dbEdition]",
+          "collation": "SQL_Latin1_General_CP1_CI_AS",
+          "maxSizeBytes": "1073741824",
+          "requestedServiceObjectiveName": "[variables('ts-Size')[parameters('environmentSize')].dbRequestedServiceObjectiveName]"
+        },
+        "copy":{
+          "name":"databasecopy",
+          "count": "[length(parameters('databases'))]"
+        }
+    }
+  ],
+  "outputs": {
+    "resourceName":{
+      "type": "string",
+      "value":"[reference(resourceId('Microsoft.Sql/servers', variables('sqlserverName'))).fullyQualifiedDomainName]"
+    },
+    "sqlDatabases":{
+      "type": "array",
+      "condition":"[equals(variables('createDatabases'),'yes')]",
+      "value":"[parameters('databases')]"
+    }
+  }
+}

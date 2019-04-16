@@ -1,0 +1,81 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the hosting plan"
+      }
+    },
+    "environmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Used for tagging"
+      }
+    },
+    "environmentSize": {
+      "type": "string",
+      "defaultValue": "small",
+      "allowedValues": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "metadata": {
+        "description": "T-shirt size for resources"
+      }
+    },
+    "accessPolicies":{
+      "type": "object",
+      "defaultValue": {"list":[]}
+    }
+  },
+  "variables": {
+    "keyVaultName": "[toLower(parameters('resourceName'))]",
+    "ts-Size": {
+      "small": {
+        "skuName": "standard",
+        "skuFamily": "A"
+      },
+      "medium": {
+        "skuName": "standard",
+        "skuFamily": "A"
+      },
+      "large": {
+        "skuName": "premium",
+        "skuFamily": "A"
+      }
+    }
+  },
+  "resources": [
+        {
+      "apiVersion": "2016-10-01",
+      "name": "[variables('keyVaultName')]",
+      "type": "Microsoft.KeyVault/vaults",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "enabledForDeployment": false,
+        "enabledForDiskEncryption": false,
+        "enabledForTemplateDeployment": true,
+        "tenantId": "[subscription().tenantId]",
+        "accessPolicies": "[parameters('accessPolicies').list]",
+        "sku": {
+          "name": "[variables('ts-Size')[parameters('environmentSize')].skuName]",
+          "family": "[variables('ts-Size')[parameters('environmentSize')].skuFamily]"
+        }
+      },
+      "tags": {
+        "displayName": "KeyVault",
+        "environment": "[parameters('environmentName')]"
+      }
+    }
+
+  ],
+  "outputs": {
+    "resourceHostName": {
+      "type":"string",
+      "value":"[reference(concat('Microsoft.KeyVault/vaults/', variables('keyVaultName'))).vaultUri]"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "Microsoft.Resources/deployments",
+  "apiVersion": "2015-01-01",
+  "name": "storageTemplate",
+  "properties": {
+    "mode": "Incremental",
+    "templateLink": {
+      "uri": "[reference('configurationTemplate').outputs.storageTemplateUrl.value]",
+      "contentVersion": "1.0.0.0"
+    },
+    "parameters": {
+      "resourceName": {
+        "value": "[reference('namingconventionTemplate').outputs.defaultNames.value.storage]"
+      },
+      "environmentName": {
+        "value": "[reference('namingconventionTemplate').outputs.envName.value]"
+      },
+      "environmentSize": {
+        "value": "[parameters('environmentSize')]"
+      }
+    }
+  },
+  "dependsOn": [
+    "configurationTemplate",
+    "namingconventionTemplate"
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the servicebus namespace"
+      }
+    },
+    "environmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Used for tagging"
+      }
+    }, 
+    "environmentSize": {
+      "type": "string",
+      "defaultValue": "small",
+      "allowedValues": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "metadata": {
+        "description": "T-shirt size for resources"
+      }
+    },
+    "queues":{
+      "type":"array",
+      "defaultValue": [
+        "none"
+      ]
+    },
+    "topics":{
+      "type":"array",
+      "defaultValue": [
+        "none"
+      ]
+    }
+  },
+  "variables": {
+    "serviceBusNamespaceName": "[toLower(parameters('resourceName'))]",
+    "createQueues":"[if(equals(first(parameters('queues')),'none'),'no','yes')]",
+    "createTopics":"[if(equals(first(parameters('topics')),'none'),'no','yes')]",
+    "ts-Size": {
+      "small": {
+        "skuName": "Standard"
+      },
+      "medium": {
+        "dbEdition": "Standard"
+      },
+      "large": {
+        "dbEdition": "Premium"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion":"2017-04-01",
+      "name": "[variables('serviceBusNamespaceName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "ServiceBus",
+        "environment": "[parameters('environmentName')]"
+      },
+      "sku": {
+        "name": "[variables('ts-Size')[parameters('environmentSize')].skuName]"
+      }
+    },
+    {
+      "condition":"[equals(variables('createQueues'),'yes')]",
+        "type": "Microsoft.ServiceBus/namespaces/queues",
+        "apiVersion": "2017-04-01",
+        "name": "[concat(variables('serviceBusNamespaceName'),'/',toLower(parameters('queues')[copyIndex()]))]",
+        "location": "[resourceGroup().location]",
+        "tags": {
+          "displayName": "ServiceBusQueue",
+          "environment": "[parameters('environmentName')]"
+        },
+        "dependsOn": [
+          "[variables('serviceBusNamespaceName')]"
+        ],
+        "properties": {
+            "lockDuration": "PT5M",
+            "maxSizeInMegabytes": 1024,
+            "requiresDuplicateDetection": false,
+            "requiresSession": false,
+            "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+            "deadLetteringOnMessageExpiration": true,
+            "duplicateDetectionHistoryTimeWindow": "PT10M",
+            "maxDeliveryCount": 1,
+            "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+            "enablePartitioning": true,
+            "enableExpress": false
+        },
+        "copy":{
+          "name":"queuecopy",
+          "count": "[length(parameters('queues'))]"
+        }
+    },
+    {
+      "condition":"[equals(variables('createTopics'),'yes')]",
+        "type": "Microsoft.ServiceBus/namespaces/topics",
+        "apiVersion": "2017-04-01",
+        "name": "[concat(variables('serviceBusNamespaceName'),'/',toLower(parameters('topics')[copyIndex()]))]",
+        "location": "[resourceGroup().location]",
+        "tags": {
+          "displayName": "ServiceBusTopic",
+          "environment": "[parameters('environmentName')]"
+        },
+        "dependsOn": [
+          "[variables('serviceBusNamespaceName')]"
+        ],
+        "properties": {
+            "maxSizeInMegabytes": 1024,
+            "requiresDuplicateDetection": false,
+            "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+            "deadLetteringOnMessageExpiration": true,
+            "duplicateDetectionHistoryTimeWindow": "PT10M",
+            "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+            "enablePartitioning": true,
+            "enableExpress": false
+        },
+        "copy":{
+          "name":"queuecopy",
+          "count": "[length(parameters('topics'))]"
+        }
+    }
+  ],
+  "outputs": {
+    "resourceName":{
+      "type": "string",
+      "value":"[variables('serviceBusNamespaceName')]"
+    },
+    "sbsQueues":{
+      "type": "array",
+      "condition":"[equals(variables('createQueues'),'yes')]",
+      "value":"[parameters('queues')]"
+    },
+    "sbsTopics":{
+      "type": "array",
+      "condition":"[equals(variables('createTopics'),'yes')]",
+      "value":"[parameters('topics')]"
+    }
+  }
+}
