@@ -5,24 +5,22 @@
   "properties": {
     "mode": "Incremental",
     "templateLink": {
-      "uri": "[reference('configurationTemplate').outputs.storageTemplateUrl.value]",
+      "uri": "[reference('configurationTemplate').outputs.apiappTemplateUrl.value]",
       "contentVersion": "1.0.0.0"
     },
     "parameters": {
       "resourceName": {
-        "value": "[reference('namingconventionTemplate').outputs.defaultNames.value.storage]"
+        "value": "[reference('namingconventionTemplate').outputs.defaultNames.value.apiapp]"
       },
       "environmentName": {
         "value": "[reference('namingconventionTemplate').outputs.envName.value]"
       },
-      "environmentSize": {
-        "value": "[parameters('environmentSize')]"
+      "appServicePlanName": {
+        "value": "[reference('appserviceplanTemplate').outputs.resourceName.value]"
       }
-
-      $$$BlobNames$$$
     }
   },
   "dependsOn": [
     $$$Dependencies$$$
   ]
-}
+} 

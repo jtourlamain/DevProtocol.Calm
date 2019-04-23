@@ -5,12 +5,12 @@
   "properties": {
     "mode": "Incremental",
     "templateLink": {
-      "uri": "[reference('configurationTemplate').outputs.storageTemplateUrl.value]",
+      "uri": "[reference('configurationTemplate').outputs.appserviceplanTemplateUrl.value]",
       "contentVersion": "1.0.0.0"
     },
     "parameters": {
       "resourceName": {
-        "value": "[reference('namingconventionTemplate').outputs.defaultNames.value.storage]"
+        "value": "[reference('namingconventionTemplate').outputs.defaultNames.value.appserviceplan]"
       },
       "environmentName": {
         "value": "[reference('namingconventionTemplate').outputs.envName.value]"
@@ -18,11 +18,10 @@
       "environmentSize": {
         "value": "[parameters('environmentSize')]"
       }
-
-      $$$BlobNames$$$
     }
   },
   "dependsOn": [
     $$$Dependencies$$$
   ]
-}
+} 
+
