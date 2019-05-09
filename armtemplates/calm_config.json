@@ -8,18 +8,25 @@
       "metadata": {
         "description": "The base url where the templates can be found." 
       }
+    },
+    "templateUrlSuffix": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "A suffix for the resource urls. Can be used to add a SAS token." 
+      }
     }
   },
   "variables":{    
-    "namingconventionTemplateUrl": "[concat(parameters('templateBaseUrl'),'calm_namingconvention.json')]",
-    "apiappTemplateUrl": "[concat(parameters('templateBaseUrl'),'apiapp.json')]",
-    "appserviceplanTemplateUrl": "[concat(parameters('templateBaseUrl'),'appserviceplan.json')]",
-    "functionappTemplateUrl": "[concat(parameters('templateBaseUrl'),'functionapp.json')]",
-    "keyvaultTemplateUrl": "[concat(parameters('templateBaseUrl'),'keyvault.json')]",
-    "servicebusTemplateUrl": "[concat(parameters('templateBaseUrl'),'servicebus.json')]",
-    "sqlserverTemplateUrl": "[concat(parameters('templateBaseUrl'),'sqlserver.json')]",
-    "storageTemplateUrl": "[concat(parameters('templateBaseUrl'),'storage.json')]",
-    "webappTemplateUrl": "[concat(parameters('templateBaseUrl'),'webapp.json')]"
+    "namingconventionTemplateUrl": "[concat(parameters('templateBaseUrl'),'calm_namingconvention.json',parameters('templateUrlSuffix'))]",
+    "apiappTemplateUrl": "[concat(parameters('templateBaseUrl'),'apiapp.json',parameters('templateUrlSuffix'))]",
+    "appserviceplanTemplateUrl": "[concat(parameters('templateBaseUrl'),'appserviceplan.json',parameters('templateUrlSuffix'))]",
+    "functionappTemplateUrl": "[concat(parameters('templateBaseUrl'),'functionapp.json',parameters('templateUrlSuffix'))]",
+    "keyvaultTemplateUrl": "[concat(parameters('templateBaseUrl'),'keyvault.json',parameters('templateUrlSuffix'))]",
+    "servicebusTemplateUrl": "[concat(parameters('templateBaseUrl'),'servicebus.json',parameters('templateUrlSuffix'))]",
+    "sqlserverTemplateUrl": "[concat(parameters('templateBaseUrl'),'sqlserver.json',parameters('templateUrlSuffix'))]",
+    "storageTemplateUrl": "[concat(parameters('templateBaseUrl'),'storage.json',parameters('templateUrlSuffix'))]",
+    "webappTemplateUrl": "[concat(parameters('templateBaseUrl'),'webapp.json',parameters('templateUrlSuffix'))]"
   },
   "resources":[
     ],
