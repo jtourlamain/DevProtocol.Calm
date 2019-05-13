@@ -1,0 +1,27 @@
+{
+  "type": "Microsoft.Resources/deployments",
+  "apiVersion": "2015-01-01",
+  "name": "$$$TemplateName$$$",
+  "properties": {
+    "mode": "Incremental",
+    "templateLink": {
+      "uri": "[reference('configurationTemplate').outputs.appserviceplanTemplateUrl.value]",
+      "contentVersion": "1.0.0.0"
+    },
+    "parameters": {
+      "resourceName": {
+        "value": "[reference('namingconventionTemplate').outputs.defaultNames.value.appserviceplan]"
+      },
+      "environmentName": {
+        "value": "[reference('namingconventionTemplate').outputs.envName.value]"
+      },
+      "environmentSize": {
+        "value": "[parameters('environmentSize')]"
+      }
+    }
+  },
+  "dependsOn": [
+    $$$Dependencies$$$
+  ]
+} 
+

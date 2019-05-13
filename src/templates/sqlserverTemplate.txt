@@ -1,0 +1,35 @@
+{
+  "type": "Microsoft.Resources/deployments",
+  "apiVersion": "2018-05-01",
+  "name": "$$$TemplateName$$$",
+  "properties": {
+    "mode": "Incremental",
+    "templateLink": {
+      "uri": "[variables('sqlTemplateUrl')]",
+      "contentVersion": "1.0.0.0"
+    },
+    "parameters": {
+      "resourceNamePrefix": {
+        "value": "[reference('namingTemplate').outputs.resourceNamePrefix.value]"
+      },
+      "environmentName": {
+        "value": "[reference('namingTemplate').outputs.envName.value]"
+      },
+      "environmentSize": {
+        "value": "[parameters('environmentSize')]"
+      },
+      "adminLogin": {
+        "value": "$$$AdminLogin$$$"
+      },
+      "adminPassword": {
+        "value": "$$$AdminPassword"
+      }
+
+      $$$DatabaseNames$$$
+
+    }
+  },
+  "dependsOn": [
+     $$$Dependencies$$$
+  ]
+} 

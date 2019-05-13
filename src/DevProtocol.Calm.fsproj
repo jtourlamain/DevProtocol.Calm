@@ -5,8 +5,21 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
+   <ItemGroup>
+    <Compile Include="Domain.fs" />
+    <Compile Include="Json.fs" />
+    <Compile Include="Arm.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
+   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="templates\basicTemplate.txt" />
+    <EmbeddedResource Include="templates\storageTemplate.txt" />
+    <EmbeddedResource Include="templates\sqlserverTemplate.txt" />
+  </ItemGroup>
+ 
 </Project>

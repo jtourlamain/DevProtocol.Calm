@@ -1,0 +1,26 @@
+{
+  "type": "Microsoft.Resources/deployments",
+  "apiVersion": "2018-05-01",
+  "name": "$$$TemplateName$$$",
+  "properties": {
+    "mode": "Incremental",
+    "templateLink": {
+      "uri": "[variables('functionappTemplateUrl')]",
+      "contentVersion": "1.0.0.0"
+    },
+    "parameters": {
+      "resourceNamePrefix": {
+        "value": "[reference('namingTemplate').outputs.resourceNamePrefix.value]"
+      },
+      "environmentName": {
+        "value": "[reference('namingTemplate').outputs.envName.value]"
+      },
+      "storageAccountName": {
+        "value": "[reference('storageTemplate').outputs.storageAccountName.value]"
+      }
+    }
+  },
+  "dependsOn": [
+    $$$Dependencies$$$
+  ]
+}
