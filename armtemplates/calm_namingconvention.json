@@ -23,6 +23,7 @@
         "defaultValue":"Development",
         "allowedValues": [
             "Poc",
+            "Test",
             "Development",
             "Acceptance",
             "Production"
@@ -46,6 +47,11 @@
         "envShort":"d",
         "envAffix":"-d",
         "envAffixShort":"d"
+      },
+      "Test":{
+        "envShort":"t",
+        "envAffix":"-t",
+        "envAffixShort":"t"
       },
       "Acceptance":{
         "envShort":"a",
