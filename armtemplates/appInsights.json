@@ -1,0 +1,47 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the application insights"
+      }
+    },
+    "environmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Used for tagging"
+      }
+    }
+  },
+  "variables": {
+    "appInsightsName": "[toLower(parameters('resourceName'))]"
+  },
+  "resources": [
+
+
+{
+      "apiVersion": "2015-05-01",
+      "name": "[variables('appInsightsName')]",
+      "type": "Microsoft.Insights/components",
+      "location": "[resourceGroup().location]",
+      "kind": "web",
+      "properties": {
+        "Application_Type": "web",
+        "Flow_Type": "Bluefield",
+        "Request_Source": "rest"
+      },
+      "tags": {
+        "displayName": "AppInsights",
+        "environment": "[parameters('environmentName')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceKey": {
+      "type":"string",
+      "value":"[reference(concat('Microsoft.Insights/components/', variables('appInsightsName'))).InstrumentationKey]"
+    }
+  }
+}

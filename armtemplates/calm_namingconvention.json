@@ -69,6 +69,10 @@
         "abbreviation":"api-wa",
         "delimiter":"-"
       },
+      "appinsights":{
+        "abbreviation":"ain",
+        "delimiter":"-"
+      },
       "appserviceplan":{
         "abbreviation":"asp",
         "delimiter":"-"
@@ -100,6 +104,7 @@
     },
     "defaultNames":{
       "apiapp":"[concat(variables('companyName'),variables('resourceConventions').apiapp.delimiter,variables('projectName'),variables('resourceConventions').apiapp.delimiter,variables('envVars')[parameters('environmentName')].envAffixShort,variables('resourceConventions').apiapp.delimiter,variables('resourceConventions').apiapp.abbreviation)]",
+      "appinsights":"[concat(variables('companyName'),variables('resourceConventions').appinsights.delimiter,variables('projectName'),variables('resourceConventions').appinsights.delimiter,variables('envVars')[parameters('environmentName')].envAffixShort,variables('resourceConventions').appinsights.delimiter,variables('resourceConventions').appinsights.abbreviation)]",
       "appserviceplan": "[concat(variables('companyName'),variables('resourceConventions').appserviceplan.delimiter,variables('projectName'),variables('resourceConventions').appserviceplan.delimiter,variables('envVars')[parameters('environmentName')].envAffixShort,variables('resourceConventions').appserviceplan.delimiter,variables('resourceConventions').appserviceplan.abbreviation)]",
       "functionapp":"[concat(variables('companyName'),variables('resourceConventions').functionapp.delimiter,variables('projectName'),variables('resourceConventions').functionapp.delimiter,variables('envVars')[parameters('environmentName')].envAffixShort,variables('resourceConventions').functionapp.delimiter,variables('resourceConventions').functionapp.abbreviation)]",
       "keyvault":"[concat(variables('companyName'),variables('resourceConventions').keyvault.delimiter,variables('projectName'),variables('resourceConventions').keyvault.delimiter,variables('envVars')[parameters('environmentName')].envAffixShort,variables('resourceConventions').keyvault.delimiter,variables('resourceConventions').keyvault.abbreviation)]",
