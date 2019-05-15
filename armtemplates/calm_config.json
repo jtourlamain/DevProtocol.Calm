@@ -20,7 +20,7 @@
   "variables":{    
     "namingconventionTemplateUrl": "[concat(parameters('templateBaseUrl'),'calm_namingconvention.json',parameters('templateUrlSuffix'))]",
     "apiappTemplateUrl": "[concat(parameters('templateBaseUrl'),'apiapp.json',parameters('templateUrlSuffix'))]",
-    "appInsightsTemplateUrl": "[concat(parameters('templateBaseUrl'),'appinsights.json',parameters('templateUrlSuffix'))]",
+    "appinsightsTemplateUrl": "[concat(parameters('templateBaseUrl'),'appinsights.json',parameters('templateUrlSuffix'))]",
     "appserviceplanTemplateUrl": "[concat(parameters('templateBaseUrl'),'appserviceplan.json',parameters('templateUrlSuffix'))]",
     "functionappTemplateUrl": "[concat(parameters('templateBaseUrl'),'functionapp.json',parameters('templateUrlSuffix'))]",
     "keyvaultTemplateUrl": "[concat(parameters('templateBaseUrl'),'keyvault.json',parameters('templateUrlSuffix'))]",
@@ -39,6 +39,10 @@
       "apiappTemplateUrl" : {
         "type" : "string",
         "value": "[variables('apiappTemplateUrl')]"
+      },
+      "appinsightsTemplateUrl" : {
+        "type" : "string",
+        "value": "[variables('appinsightsTemplateUrl')]"
       },
       "appserviceplanTemplateUrl" : {
         "type" : "string",
